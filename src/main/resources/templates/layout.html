@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title th:text="${title} + ' — LSU Scheduler'">LSU Scheduler</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&family=Source+Serif+4:wght@600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+
+<div class="app-shell">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-icon">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="1" y="1" width="9" height="9" rx="2" fill="white" fill-opacity="0.9"/>
+                    <rect x="12" y="1" width="9" height="9" rx="2" fill="white" fill-opacity="0.5"/>
+                    <rect x="1" y="12" width="9" height="9" rx="2" fill="white" fill-opacity="0.5"/>
+                    <rect x="12" y="12" width="9" height="9" rx="2" fill="white" fill-opacity="0.3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="brand-name">LSU Scheduler</div>
+                <div class="brand-sub">Tiger Academic Planner</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a th:href="@{/dashboard}"
+               th:classappend="${activePage == 'dashboard'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H3a1 1 0 01-1-1V3zm9 0a1 1 0 011-1h5a1 1 0 011 1v3a1 1 0 01-1 1h-5a1 1 0 01-1-1V3zM2 13a1 1 0 011-1h5a1 1 0 011 1v3a1 1 0 01-1 1H3a1 1 0 01-1-1v-3zm9-1a1 1 0 011-1h5a1 1 0 011 1v6a1 1 0 01-1 1h-5a1 1 0 01-1-1v-6z"/>
+                </svg>
+                Dashboard
+            </a>
+
+            <a th:href="@{/courses}"
+               th:classappend="${activePage == 'courses'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/>
+                </svg>
+                Course Catalog
+            </a>
+
+            <a th:href="@{/schedule}"
+               th:classappend="${activePage == 'schedule'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                </svg>
+                My Schedule
+            </a>
+
+            <a th:href="@{/degree-plan}"
+               th:classappend="${activePage == 'degree'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zm5.99 7.176A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.35 2.524 1 1 0 01-1.4 0zM6 18a1 1 0 001-1v-2.065a8.935 8.935 0 00-2-.712V17a1 1 0 001 1z"/>
+                </svg>
+                Degree Plan
+            </a>
+
+            <div class="nav-section-label">Tools</div>
+
+            <a th:href="@{/profile}"
+               th:classappend="${activePage == 'profile'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                </svg>
+                My Profile
+            </a>
+
+            <a th:href="@{/advising}"
+               th:classappend="${activePage == 'advising'} ? 'active' : ''"
+               class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                </svg>
+                Advising
+            </a>
+        </nav>
+
+        <!-- User profile at bottom -->
+        <div class="sidebar-user">
+            <div class="user-avatar" th:text="${#strings.substring(student.name, 0, 2).toUpperCase()}">MN</div>
+            <div class="user-info">
+                <div class="user-name" th:text="${student.name}">Student Name</div>
+                <div class="user-sub" th:text="${student.major + ' · ' + student.year}">CS · Junior</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main content area -->
+    <div class="main-area">
+        <!-- Top bar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 class="page-title" th:text="${title}">Dashboard</h1>
+                <span class="semester-pill" th:text="${currentSemester}">Spring 2026</span>
+            </div>
+            <div class="topbar-right">
+                <div th:if="${registrationOpen}" class="status-badge status-open">Registration Open</div>
+                <div th:unless="${registrationOpen}" class="status-badge status-closed">Registration Closed</div>
+                <div class="topbar-avatar" th:text="${#strings.substring(student.name, 0, 2).toUpperCase()}">MN</div>
+            </div>
+        </header>
+
+        <!-- Flash messages -->
+        <div th:if="${successMsg}" class="flash flash-success">
+            <span th:text="${successMsg}"></span>
+        </div>
+        <div th:if="${errorMsg}" class="flash flash-error">
+            <span th:text="${errorMsg}"></span>
+        </div>
+
+        <!-- Page content injected here -->
+        <main class="page-content">
+            <div th:replace="${content}">Page content goes here</div>
+        </main>
+    </div>
+</div>
+
+<script th:src="@{/js/main.js}"></script>
+</body>
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sign Up — LSU Scheduler</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            background-image: url('https://www.lsu.edu/communications/images/zoom-backgrounds/lsu-0064-78-panoramic-campus-aerial.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: 'Source Sans 3', sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 0;
+}
+        .signup-box {
+            background: white;
+            border: 0.5px solid rgba(0,0,0,0.10);
+            border-radius: 14px;
+            padding: 40px;
+            width: 100%;
+            max-width: 440px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 40px rgba(0,0,0,0.4);
+        }
+        .login-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
+        .login-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: #4A235A;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-logo-text { font-size: 18px; font-weight: 600; color: #1A1A1A; }
+        .login-logo-sub { font-size: 12px; color: #909090; }
+        .login-title { font-size: 22px; font-weight: 600; color: #1A1A1A; margin-bottom: 6px; }
+        .login-sub { font-size: 13px; color: #5A5A5A; margin-bottom: 28px; }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: #1A1A1A;
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            height: 40px;
+            padding: 0 14px;
+            border: 0.5px solid rgba(0,0,0,0.20);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1A1A1A;
+            background: white;
+            outline: none;
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            border-color: #4A235A;
+            box-shadow: 0 0 0 3px rgba(74,35,90,0.10);
+        }
+        .form-select {
+            width: 100%;
+            height: 40px;
+            padding: 0 14px;
+            border: 0.5px solid rgba(0,0,0,0.20);
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1A1A1A;
+            background: white;
+            outline: none;
+            box-sizing: border-box;
+            cursor: pointer;
+        }
+        .signup-btn {
+            width: 100%;
+            height: 42px;
+            background: #4A235A;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.15s;
+        }
+        .signup-btn:hover { background: #6B3480; }
+        .error-msg {
+            background: #FCEBEB;
+            color: #A32D2D;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .success-msg {
+            background: #EAF3DE;
+            color: #3B6D11;
+            border-radius: 8px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #5A5A5A;
+        }
+        .login-link a { color: #4A235A; font-weight: 600; text-decoration: none; }
+        .login-link a:hover { text-decoration: underline; }
+        .lsu-badge {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #909090;
+        }
+        .lsu-badge span { color: #4A235A; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="signup-box">
+        <div class="login-logo">
+            <div class="login-logo-icon">
+                <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                    <rect x="1" y="1" width="9" height="9" rx="2" fill="white" fill-opacity="0.9"/>
+                    <rect x="12" y="1" width="9" height="9" rx="2" fill="white" fill-opacity="0.5"/>
+                    <rect x="1" y="12" width="9" height="9" rx="2" fill="white" fill-opacity="0.5"/>
+                    <rect x="12" y="12" width="9" height="9" rx="2" fill="white" fill-opacity="0.3"/>
+                </svg>
+            </div>
+            <div>
+                <div class="login-logo-text">LSU Scheduler</div>
+                <div class="login-logo-sub">Tiger Academic Planner</div>
+            </div>
+        </div>
+
+        <div class="login-title">Create your account</div>
+        <div class="login-sub">Fill in your details to get started</div>
+
+        <div th:if="${error}" class="error-msg" th:text="${error}"></div>
+        <div th:if="${success}" class="success-msg" th:text="${success}"></div>
+
+        <form th:action="@{/signup}" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">First name</label>
+                    <input type="text" name="firstName" class="form-input"
+                           placeholder="John" required/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Last name</label>
+                    <input type="text" name="lastName" class="form-input"
+                           placeholder="Smith" required/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">LSU Email</label>
+                <input type="email" name="email" class="form-input"
+                       placeholder="you@lsu.edu" required/>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Student ID</label>
+                <input type="text" name="studentId" class="form-input"
+                       placeholder="e.g. 89012345" required/>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Concentration</label>
+                    <select name="concentration" class="form-select" required>
+                        <option value="">Select your concentration...</option>
+                        <option value="Software Engineering">Software Engineering</option>
+                        <option value="Cybersecurity">Cybersecurity</option>
+                        <option value="Data Science">Data Science and Analytics</option>
+                        <option value="Clound Computing">Clound Computing and Networking</option>
+                    </select>
+                </div>
+                
+            </div>
+
+            <button type="submit" class="signup-btn">Create account</button>
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a th:href="@{/login}">Sign in</a>
+        </div>
+
+        <div class="lsu-badge">Louisiana State University · <span>Geaux Tigers</span></div>
+    </div>
+</body>
+</html>

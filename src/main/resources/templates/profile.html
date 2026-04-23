@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('My Profile', ~{::main-content})}">
+<body>
+<div th:fragment="main-content">
+
+    <div style="max-width:600px;">
+
+        <!-- Avatar and name card -->
+        <div class="card" style="margin-bottom:16px;display:flex;align-items:center;gap:20px;">
+            <div style="width:64px;height:64px;border-radius:50%;background:#4A235A;
+                        color:#fff;font-size:22px;font-weight:600;display:flex;
+                        align-items:center;justify-content:center;flex-shrink:0;"
+                 th:text="${#strings.substring(student.name, 0, 2).toUpperCase()}">MN</div>
+            <div>
+                <div style="font-size:18px;font-weight:600;color:var(--text-primary);"
+                     th:text="${student.name}">Student Name</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-top:3px;"
+                     th:text="${student.major + ' · ' + student.year}">CS · Junior</div>
+                <div style="font-size:12px;color:var(--text-muted);margin-top:2px;"
+                     th:text="${student.email}">email@lsu.edu</div>
+            </div>
+        </div>
+
+        <!-- Success message -->
+        <div th:if="${successMsg}"
+             style="background:#EAF3DE;color:#3B6D11;border-radius:8px;
+                    padding:10px 14px;font-size:13px;font-weight:500;margin-bottom:16px;"
+             th:text="${successMsg}">
+        </div>
+
+        <!-- Edit form -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Edit profile</h2>
+            </div>
+
+            <form th:action="@{/profile}" method="post">
+                <div class="form-group" style="margin-bottom:16px;">
+                    <label class="form-label"
+                           style="display:block;font-size:13px;font-weight:500;
+                                  color:var(--text-primary);margin-bottom:6px;">
+                        Full name
+                    </label>
+                    <input type="text" name="name" class="search-input"
+                           th:value="${student.name}" required
+                           style="width:100%;"/>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+    <label class="form-label"
+           style="display:block;font-size:13px;font-weight:500;
+                  color:var(--text-primary);margin-bottom:6px;">
+        Major
+    </label>
+    <div style="height:40px;padding:0 14px;border:0.5px solid rgba(0,0,0,0.12);
+                border-radius:8px;font-size:14px;background:#F9F9F9;
+                display:flex;align-items:center;color:var(--text-muted);">
+        Computer Science (fixed)
+    </div>
+</div>
+                        Year
+                    </label>
+                    <select name="year" class="filter-select" style="width:100%;">
+                        <option value="Freshman"
+                                th:selected="${student.year == 'Freshman'}">Freshman</option>
+                        <option value="Sophomore"
+                                th:selected="${student.year == 'Sophomore'}">Sophomore</option>
+                        <option value="Junior"
+                                th:selected="${student.year == 'Junior'}">Junior</option>
+                        <option value="Senior"
+                                th:selected="${student.year == 'Senior'}">Senior</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom:24px;">
+                    <label class="form-label"
+                           style="display:block;font-size:13px;font-weight:500;
+                                  color:var(--text-primary);margin-bottom:6px;">
+                        Concentration
+                    </label>
+                    <select name="concentration" class="filter-select" style="width:100%;">
+                        <option value="Software Engineering"
+                                th:selected="${student.concentration == 'Software Engineering'}">
+                            Software Engineering</option>
+                        <option value="Cybersecurity"
+                                th:selected="${student.concentration == 'Cybersecurity'}">
+                            Cybersecurity</option>
+                        <option value="Data Science"
+                                th:selected="${student.concentration == 'Data Science'}">
+                            Data Science and Analytics</option>
+                        <option value="Cloud Computing"
+                                th:selected="${student.concentration == 'Cloud Computing'}">
+                            Cloud Computing and Networking</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-primary" style="width:100%;">
+                    Save changes
+                </button>
+            </form>
+        </div>
+
+        <!-- Account info (read only) -->
+        <div class="card" style="margin-top:16px;">
+            <div class="card-header">
+                <h2 class="card-title">Account info</h2>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;justify-content:space-between;
+                            font-size:13px;padding-bottom:12px;
+                            border-bottom:0.5px solid var(--border);">
+                    <span style="color:var(--text-secondary);">Email</span>
+                    <span th:text="${student.email}" style="font-weight:500;">email@lsu.edu</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;
+                            font-size:13px;padding-bottom:12px;
+                            border-bottom:0.5px solid var(--border);">
+                    <span style="color:var(--text-secondary);">Student ID</span>
+                    <span th:text="${student.studentId}" style="font-weight:500;">89012345</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;font-size:13px;">
+                    <span style="color:var(--text-secondary);">Credits completed</span>
+                    <span th:text="${student.creditsCompleted}" style="font-weight:500;">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout -->
+        <div style="margin-top:16px;text-align:center;">
+            <a th:href="@{/logout}"
+               style="font-size:13px;color:var(--red);font-weight:500;">
+                Sign out
+            </a>
+        </div>
+
+    </div>
+
+</div>
+</body>
+</html>

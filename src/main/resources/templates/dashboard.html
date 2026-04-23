@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Dashboard', ~{::main-content})}">
+<body>
+<div th:fragment="main-content">
+
+    <!-- Stat cards row -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-value" th:text="${eligibleCount}">42</div>
+            <div class="stat-label">Eligible courses</div>
+        </div>
+        <div class="stat-card stat-card--warn">
+            <div class="stat-value" th:text="${requiredThisSem}">3</div>
+            <div class="stat-label">Required this semester</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" th:text="${creditsCompleted}">89</div>
+            <div class="stat-label">Credits completed</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value" th:text="${creditsRemaining}">31</div>
+            <div class="stat-label">Credits remaining</div>
+        </div>
+    </div>
+
+    <!-- Main two-column layout -->
+    <div class="dashboard-grid">
+
+        <!-- Left: Course list -->
+        <div class="dashboard-main">
+
+            <!-- Alerts -->
+            <div th:if="${not #lists.isEmpty(alerts)}" class="alerts-block">
+                <div th:each="alert : ${alerts}"
+                     th:classappend="${alert.type == 'urgent'} ? 'alert alert--urgent' : 'alert alert--info'"
+                     th:text="${alert.message}">
+                </div>
+            </div>
+
+            <!-- Eligible courses card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Eligible courses for you</h2>
+                    <a th:href="@{/courses}" class="card-link">View all →</a>
+                </div>
+
+                <!-- Filter pills -->
+                <div class="filter-row">
+                    <button class="filter-pill active" data-filter="all">All</button>
+                    <button class="filter-pill" data-filter="required">Required</button>
+                    <button class="filter-pill" data-filter="elective">Electives</button>
+                    <button class="filter-pill" data-filter="fall-only">Fall only</button>
+                    <button class="filter-pill" data-filter="no-conflict">No conflicts</button>
+                </div>
+
+                <!-- Course rows -->
+                <div class="course-list">
+                    <div th:each="course : ${eligibleCourses}"
+                         th:classappend="${course.eligible} ? 'course-row' : 'course-row course-row--ineligible'"
+                         th:attr="data-type=${course.type}">
+
+                        <!-- Priority dot -->
+                        <div class="priority-dot"
+                             th:classappend="${course.priority == 'HIGH'} ? 'dot--red' :
+                                            (${course.priority == 'MEDIUM'} ? 'dot--amber' :
+                                            (${course.eligible} ? 'dot--green' : 'dot--gray'))">
+                        </div>
+
+                        <!-- Course info -->
+                        <div class="course-info">
+                            <div class="course-name">
+                                <span th:text="${course.courseId}">CSC 4330</span>
+                                —
+                                <span th:text="${course.courseName}">Software Systems Dev</span>
+                            </div>
+                            <div class="course-meta">
+                                <span th:if="${course.eligible}">
+                                    <span th:text="${course.timeSlot}">MWF 10:30–11:20</span>
+                                    · <span th:text="${course.building}">Patrick Taylor</span>
+                                    · <span th:text="${course.sectionCount + ' section(s)'}">1 section</span>
+                                </span>
+                                <span th:unless="${course.eligible}" class="text-muted">
+                                    Missing prerequisite: <span th:text="${course.missingPrereq}">CSC 3102</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Tags -->
+                        <div class="tag-group">
+                            <span th:if="${course.required}" class="tag tag--required">Required</span>
+                            <span th:if="${course.semesterOnly != null}"
+                                  class="tag tag--semester"
+                                  th:text="${course.semesterOnly + ' only'}">Spring only</span>
+                            <span th:if="${course.eligible}" class="tag tag--eligible">Eligible</span>
+                            <span th:unless="${course.eligible}" class="tag tag--ineligible">Ineligible</span>
+                        </div>
+
+                        <!-- Add button -->
+                        <form th:if="${course.eligible}" th:action="@{/schedule/add}" method="post">
+                            <input type="hidden" name="courseId" th:value="${course.courseId}"/>
+                            <button type="submit" class="btn-add" title="Add to schedule">+</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right sidebar -->
+        <aside class="dashboard-sidebar">
+
+            <!-- Degree progress -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Degree progress</h2>
+    </div>
+
+    <div th:if="${#lists.isEmpty(degreeProgress)}" class="empty-state">
+        No degree plan found.
+    </div>
+
+    <div th:each="prog : ${degreeProgress}" class="progress-item">
+        <div class="progress-label">
+            <span th:text="${prog.label}">CS Core</span>
+            <span class="progress-frac"
+                  th:text="${prog.completed + ' / ' + prog.total + ' cr'}">
+                0 / 0 cr
+            </span>
+        </div>
+        <div class="progress-track">
+            <div class="progress-fill"
+                 th:style="'width: ' + ${prog.pct} + '%'"
+                 th:classappend="${prog.pct == 100} ? 'progress-fill--complete' : ''">
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- Selected sections -->
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Selected sections</h2>
+        <span class="card-count" th:text="${#lists.size(selectedSections)}">0</span>
+    </div>
+
+    <div th:if="${#lists.isEmpty(selectedSections)}" class="empty-state">
+        No courses added yet.
+    </div>
+
+    <div th:each="enrollment : ${selectedSections}" class="section-row">
+        <div class="section-info">
+            <div class="section-course"
+                 th:text="${enrollment.course.courseId}">CSC 4330</div>
+            <div class="section-time"
+                 th:text="${enrollment.course.courseName}">Course Name</div>
+        </div>
+        <div class="section-actions">
+            <form th:action="@{/schedule/remove}" method="post">
+                <input type="hidden" name="courseId"
+                       th:value="${enrollment.course.courseId}"/>
+                <button type="submit" class="btn-remove" title="Remove">×</button>
+            </form>
+        </div>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(selectedSections)}"
+         class="section-footer">
+        <span th:text="${#lists.size(selectedSections) + ' course(s) · ' + totalCredits + ' credits'}">
+            0 courses · 0 credits
+        </span>
+        <a th:href="@{/schedule}" class="card-link">Full schedule →</a>
+    </div>
+</div>
+
+            <!-- Quick links -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Quick links</h2>
+                </div>
+                <div class="quick-links">
+                    <a href="https://www.lsu.edu/registrar/" target="_blank" class="quick-link">LSU Registrar ↗</a>
+                    <a href="https://www.lsu.edu/advising/" target="_blank" class="quick-link">Academic Advising ↗</a>
+                    <a href="https://www.ratemyprofessors.com/search/schools?q=louisiana+state+university"
+                       target="_blank" class="quick-link">Rate My Professors ↗</a>
+                    <a href="https://maps.lsu.edu/" target="_blank" class="quick-link">Campus Map ↗</a>
+                </div>
+            </div>
+
+        </aside>
+    </div>
+
+</div>
+</body>
+</html>

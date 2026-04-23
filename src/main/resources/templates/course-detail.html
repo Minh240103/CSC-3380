@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Course Detail', ~{::main-content})}">
+<body>
+<div th:fragment="main-content">
+
+    <div class="back-link">
+        <a th:href="@{/courses}">← Back to catalog</a>
+    </div>
+
+    <div class="card course-detail-header">
+        <div class="course-detail-id">
+            <span class="course-id-badge badge--purple"
+                  th:text="${course.courseId}">CSC 4330</span>
+            <span th:if="${course.required}" class="tag tag--required">Required</span>
+            <span th:if="${course.eligible}" class="tag tag--eligible">Eligible</span>
+            <span th:unless="${course.eligible}" class="tag tag--ineligible">Ineligible</span>
+        </div>
+
+        <h2 class="course-detail-name" th:text="${course.courseName}">Course Name</h2>
+
+        <div class="course-detail-meta">
+            <span><strong th:text="${course.creditHours}">3</strong> credit hours</span>
+            <span>Offered: <strong th:text="${course.semesterOffered}">Both</strong></span>
+            <span>Type: <strong th:text="${course.type}">CS Core</strong></span>
+        </div>
+
+        <div class="prereq-block">
+            <div class="prereq-title">Prerequisites</div>
+            <div th:if="${#lists.isEmpty(course.prerequisites)}"
+                 class="text-muted">None required</div>
+            <div th:unless="${#lists.isEmpty(course.prerequisites)}"
+                 style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+                <span th:each="prereq : ${course.prerequisites}"
+                      class="prereq prereq--met"
+                      th:text="${prereq}">CSC 3102</span>
+            </div>
+        </div>
+
+        <div th:if="${alreadyEnrolled}"
+             style="margin-top:14px;padding:10px 14px;background:#EAF3DE;
+                    border-radius:8px;font-size:13px;color:#3B6D11;font-weight:500;">
+            ✓ You have already added this course to your schedule
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h2 class="card-title">Available sections</h2>
+            <span class="card-count"
+                  th:text="${sections.size() + ' section(s)'}">0 sections</span>
+        </div>
+
+        <div th:if="${#lists.isEmpty(sections)}" class="empty-state">
+            No sections available for this semester.
+        </div>
+
+        <div th:each="section : ${sections}" class="section-detail-row">
+            <div class="section-detail-main">
+                <div class="section-detail-top">
+                    <span class="section-num"
+                          th:text="'Section ' + ${section.sectionNumber}">Section 001</span>
+                    <span th:if="${section.enrolledCount >= section.capacity}"
+                          class="conflict-badge">Full</span>
+                </div>
+
+                <div class="section-instructor">
+                    <strong th:text="${section.instructor}">Dr. Smith</strong>
+                </div>
+
+                <div class="section-schedule">
+                    <span th:text="${section.days}">MWF</span>
+                    <span th:text="' · ' + ${section.startTime} + ' – ' + ${section.endTime}">
+                        · 10:30 – 11:20 AM</span>
+                    <span th:text="' · ' + ${section.building} + ' ' + ${section.room}">
+                        · Patrick Taylor 1100</span>
+                </div>
+
+                <div class="section-spots">
+                    <span th:text="${section.enrolledCount + ' / ' + section.capacity + ' enrolled'}">
+                        22 / 30 enrolled</span>
+                    <div class="mini-progress">
+                        <div class="mini-fill"
+                             th:style="'width: ' + ${section.enrolledCount * 100 / section.capacity} + '%'"
+                             th:classappend="${section.enrolledCount >= section.capacity} ? 'mini-fill--full' : ''">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-detail-action">
+                <!-- Show Add button only if not enrolled at all -->
+                <form th:if="${course.eligible and !alreadyEnrolled}"
+                      th:action="@{/schedule/add}" method="post">
+                    <input type="hidden" name="courseId" th:value="${course.courseId}"/>
+                    <input type="hidden" name="sectionId" th:value="${section.sectionId}"/>
+                    <button type="submit"
+                            th:disabled="${section.enrolledCount >= section.capacity}"
+                            th:classappend="${section.enrolledCount >= section.capacity} ?
+                                           'btn-primary btn-primary--disabled' : 'btn-primary'">
+                        <span th:text="${section.enrolledCount >= section.capacity} ?
+                                       'Section full' : 'Add to schedule'">Add to schedule</span>
+                    </button>
+                </form>
+
+                <!-- Show Added only for the specific enrolled section -->
+                <div th:if="${alreadyEnrolled and enrolledSectionId == section.sectionId}"
+                     style="font-size:12px;color:#3B6D11;font-weight:500;">
+                    ✓ Added
+                </div>
+
+                <div th:if="${!course.eligible}"
+                     style="font-size:12px;color:var(--red);">
+                    Prerequisites not met
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

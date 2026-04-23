@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('My Schedule', ~{::main-content})}">
+<body>
+<div th:fragment="main-content">
+
+    <!-- Summary cards -->
+    <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 18px;">
+        <div class="stat-card">
+            <div class="stat-value" th:text="${enrollments.size()}">0</div>
+            <div class="stat-label">Courses added</div>
+        </div>
+        <div class="stat-card stat-card--warn">
+            <div class="stat-value" th:text="${totalCredits}">0</div>
+            <div class="stat-label">Total credits</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-value"
+                 th:text="${totalCredits >= 12} ? 'Full time' : 'Part time'">Part time</div>
+            <div class="stat-label">Student status</div>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div th:if="${#lists.isEmpty(enrollments)}" class="card" style="text-align:center; padding: 60px 20px;">
+        <div style="font-size:40px; margin-bottom:16px;">📚</div>
+        <div style="font-size:16px; font-weight:500; color:var(--text-primary); margin-bottom:8px;">
+            No courses added yet
+        </div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">
+            Go to the Course Catalog to find and add courses to your schedule
+        </div>
+        <a th:href="@{/courses}" class="btn-primary" style="display:inline-block; text-decoration:none; line-height:36px; padding: 0 20px;">
+            Browse courses
+        </a>
+    </div>
+
+    <!-- Schedule table -->
+    <div th:unless="${#lists.isEmpty(enrollments)}" class="card">
+        <div class="card-header">
+            <h2 class="card-title">Spring 2026 Schedule</h2>
+            <span class="card-count" th:text="${totalCredits + ' credits'}">0 credits</span>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Course</th>
+                    <th>Title</th>
+                    <th>Credits</th>
+                    <th>Type</th>
+                    <th>Semester</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="enrollment : ${enrollments}">
+                    <td>
+                        <span class="course-id-badge badge--purple"
+                              th:text="${enrollment.course.courseId}">CSC 4330</span>
+                    </td>
+                    <td>
+                        <div class="course-title-cell">
+                            <span th:text="${enrollment.course.courseName}">Course Name</span>
+                            <span th:if="${enrollment.course.required}"
+                                  class="tag tag--required" style="margin-left:6px;">Required</span>
+                        </div>
+                    </td>
+                    <td th:text="${enrollment.course.creditHours}">3</td>
+                    <td>
+                        <span class="course-id-badge"
+                              th:classappend="${enrollment.course.type == 'CS_CORE'} ? 'badge--purple' :
+                                             (${enrollment.course.type == 'MATH'} ? 'badge--blue' : 'badge--gray')"
+                              th:text="${enrollment.course.type}">CS_CORE</span>
+                    </td>
+                    <td>
+                        <span class="semester-tag"
+                              th:classappend="${enrollment.course.semesterOffered == 'FALL'} ? 'sem--fall' :
+                                             (${enrollment.course.semesterOffered == 'SPRING'} ? 'sem--spring' : 'sem--both')"
+                              th:text="${enrollment.course.semesterOffered}">BOTH</span>
+                    </td>
+                    <td>
+                        <form th:action="@{/schedule/remove}" method="post"
+                              onsubmit="return confirm('Remove this course from your schedule?')">
+                            <input type="hidden" name="courseId"
+                                   th:value="${enrollment.course.courseId}"/>
+                            <button type="submit" class="btn-remove-course">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="margin-top:16px; padding-top:14px; border-top:0.5px solid var(--border);
+                    display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-size:13px; color:var(--text-muted);">
+                Full time = 12+ credits
+            </span>
+            <a th:href="@{/courses}" class="btn-primary"
+               style="display:inline-block; text-decoration:none; line-height:36px; padding: 0 16px; font-size:13px;">
+                + Add more courses
+            </a>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
