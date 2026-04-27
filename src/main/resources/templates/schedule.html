@@ -50,6 +50,7 @@
                     <th>Credits</th>
                     <th>Type</th>
                     <th>Semester</th>
+                    <th>Time & Location</th>
                     <th></th>
                 </tr>
             </thead>
@@ -79,6 +80,28 @@
                                              (${enrollment.course.semesterOffered == 'SPRING'} ? 'sem--spring' : 'sem--both')"
                               th:text="${enrollment.course.semesterOffered}">BOTH</span>
                     </td>
+
+                    <td>
+                        <div th:if="${enrollment.sectionId != null}">
+                            <div th:each="section : ${sections}"
+                                 th:if="${section.sectionId == enrollment.sectionId}">
+                                <div style="font-size:12px;font-weight:500;color:var(--text-primary);"
+                                     th:text="${section.days + ' ' + section.startTime + ' – ' + section.endTime}">
+                                </div>
+                                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;"
+                                     th:text="${section.building + ' ' + section.room}">
+                                </div>
+                                <div style="font-size:11px;color:var(--text-muted);margin-top:2px;"
+                                     th:text="${section.instructor}">
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${enrollment.sectionId == null}"
+                             style="font-size:11px;color:var(--text-muted);">
+                            No section selected
+                        </div>
+                    </td>
+                    
                     <td>
                         <form th:action="@{/schedule/remove}" method="post"
                               onsubmit="return confirm('Remove this course from your schedule?')">

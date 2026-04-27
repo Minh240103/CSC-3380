@@ -49,9 +49,7 @@
                 <div class="filter-row">
                     <button class="filter-pill active" data-filter="all">All</button>
                     <button class="filter-pill" data-filter="required">Required</button>
-                    <button class="filter-pill" data-filter="elective">Electives</button>
-                    <button class="filter-pill" data-filter="fall-only">Fall only</button>
-                    <button class="filter-pill" data-filter="no-conflict">No conflicts</button>
+                    
                 </div>
 
                 <!-- Course rows -->
@@ -96,11 +94,6 @@
                             <span th:unless="${course.eligible}" class="tag tag--ineligible">Ineligible</span>
                         </div>
 
-                        <!-- Add button -->
-                        <form th:if="${course.eligible}" th:action="@{/schedule/add}" method="post">
-                            <input type="hidden" name="courseId" th:value="${course.courseId}"/>
-                            <button type="submit" class="btn-add" title="Add to schedule">+</button>
-                        </form>
                     </div>
                 </div>
             </div>
@@ -110,67 +103,31 @@
         <aside class="dashboard-sidebar">
 
             <!-- Degree progress -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">Degree progress</h2>
-    </div>
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title">Degree progress</h2>
+                </div>
 
-    <div th:if="${#lists.isEmpty(degreeProgress)}" class="empty-state">
-        No degree plan found.
-    </div>
+                <div th:if="${#lists.isEmpty(degreeProgress)}" class="empty-state">
+                    No degree plan found.
+                </div>
 
-    <div th:each="prog : ${degreeProgress}" class="progress-item">
-        <div class="progress-label">
-            <span th:text="${prog.label}">CS Core</span>
-            <span class="progress-frac"
-                  th:text="${prog.completed + ' / ' + prog.total + ' cr'}">
-                0 / 0 cr
-            </span>
-        </div>
-        <div class="progress-track">
-            <div class="progress-fill"
-                 th:style="'width: ' + ${prog.pct} + '%'"
-                 th:classappend="${prog.pct == 100} ? 'progress-fill--complete' : ''">
+                <div th:each="prog : ${degreeProgress}" class="progress-item">
+                    <div class="progress-label">
+                        <span th:text="${prog.label}">CS Core</span>
+                        <span class="progress-frac"
+                              th:text="${prog.completed + ' / ' + prog.total + ' cr'}">
+                            0 / 0 cr
+                        </span>
+                    </div>
+                    <div class="progress-track">
+                        <div class="progress-fill"
+                             th:style="'width: ' + ${prog.pct} + '%'"
+                             th:classappend="${prog.pct == 100} ? 'progress-fill--complete' : ''">
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-
-            <!-- Selected sections -->
-<div class="card">
-    <div class="card-header">
-        <h2 class="card-title">Selected sections</h2>
-        <span class="card-count" th:text="${#lists.size(selectedSections)}">0</span>
-    </div>
-
-    <div th:if="${#lists.isEmpty(selectedSections)}" class="empty-state">
-        No courses added yet.
-    </div>
-
-    <div th:each="enrollment : ${selectedSections}" class="section-row">
-        <div class="section-info">
-            <div class="section-course"
-                 th:text="${enrollment.course.courseId}">CSC 4330</div>
-            <div class="section-time"
-                 th:text="${enrollment.course.courseName}">Course Name</div>
-        </div>
-        <div class="section-actions">
-            <form th:action="@{/schedule/remove}" method="post">
-                <input type="hidden" name="courseId"
-                       th:value="${enrollment.course.courseId}"/>
-                <button type="submit" class="btn-remove" title="Remove">×</button>
-            </form>
-        </div>
-    </div>
-
-    <div th:if="${!#lists.isEmpty(selectedSections)}"
-         class="section-footer">
-        <span th:text="${#lists.size(selectedSections) + ' course(s) · ' + totalCredits + ' credits'}">
-            0 courses · 0 credits
-        </span>
-        <a th:href="@{/schedule}" class="card-link">Full schedule →</a>
-    </div>
-</div>
 
             <!-- Quick links -->
             <div class="card">

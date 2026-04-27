@@ -62,6 +62,13 @@ public class ScheduleController {
         model.addAttribute("enrollments", enrollments);
         model.addAttribute("totalCredits", totalCredits);
 
+        List<com.tigers.lsu_scheduler.model.Section> sections = new java.util.ArrayList<>();
+        for (Enrollment enrollment : enrollments) {
+            sections.addAll(sectionRepository.findByCourse_CourseId(
+            enrollment.getCourse().getCourseId()));
+}
+model.addAttribute("sections", sections);
+
         return "schedule";
     }
 
